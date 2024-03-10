@@ -1,0 +1,23 @@
+<!-- pdf_list.html -->
+{% extends 'accounts/index.html' %}
+{% load crispy_forms_tags %}
+{% block start %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF List</title>
+</head>
+<body>
+    <h1>PDF List</h1>
+    <ul>
+        {% for pdf in pdfs %}
+            <li>
+                {{ pdf.title }} - <a href="{{ pdf.public_url }}">View PDF</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+{% endblock start %}

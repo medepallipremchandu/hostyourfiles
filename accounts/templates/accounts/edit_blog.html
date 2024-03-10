@@ -1,0 +1,120 @@
+{% extends 'accounts/index.html' %}
+{% load crispy_forms_tags %}
+{% block start %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Edit Blog</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <!-- Include necessary CSS and JS files -->
+    <!-- Your existing styles -->
+    <style media="screen">
+        body {
+            background-color:rgb(30,30,40);
+        }
+        .background {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        form {
+            max-width: 1400px;
+            width: 90%; /* Adjust the width of the form */
+            background-color: rgba(255, 255, 255, 0.13);
+            margin: 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+            padding: 50px 35px;
+            position: relative;
+            z-index: 1;
+        }
+        form * {
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            outline: none;
+            border: none;
+        }
+        form h3 {
+            font-size: 32px;
+            font-weight: 500;
+            line-height: 42px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 30px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        textarea, input {
+            height: 50px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.07);
+            border-radius: 3px;
+            padding: 0 10px;
+            margin-top: 8px;
+            font-size: 14px;
+            font-weight: 300;
+            box-sizing: border-box;
+        }
+        ::placeholder {
+            color: #e5e5e5;
+        }
+        button {
+            margin-top: 50px;
+            width: 100%;
+            background-color: #ffffff;
+            color: #080710;
+            padding: 15px 0;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .container1{
+            padding-top: 4%;
+        }
+
+        /* Media query for smaller screens */
+        @media screen and (max-width: 767px) {
+            form {
+                padding: 20px;
+            }
+            form h3 {
+                font-size: 24px;
+                line-height: 32px;
+            }
+            label {
+                font-size: 14px;
+            }
+            textarea, input {
+                height: 40px;
+                font-size: 12px;
+            }
+            button {
+                margin-top: 30px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+    </div>
+    <div class="container1">
+    <form method="POST">
+        {% csrf_token %}
+        <h3>Edit Blog</h3>
+        {{ form.as_p }}
+        <button type="submit">Update</button>
+    </form>
+</div>
+</body>
+</html>
+{% endblock start %}

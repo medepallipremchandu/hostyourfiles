@@ -1,0 +1,253 @@
+{% extends "accounts/index.html" %}
+{% load crispy_forms_tags %}
+{% block start %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALL FILES</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style media="screen">
+        *,
+        *:before,
+        *:after {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: rgb(30, 30, 40);
+            color: white;
+        }
+
+        .background {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            top: 50%;
+            z-index: -1;
+        }
+
+        .card {
+            border: 2px solid white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.13)
+        }
+
+        .card-inner {
+            padding: 20px;
+        }
+
+        .title-box {
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            margin-bottom: 0;
+        }
+
+        .content-box {
+            margin-bottom: 10px;
+        }
+
+        .public-url-box {
+            margin-bottom: 10px;
+        }
+
+        .url-container {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.13);
+            border-radius: 5px;
+            padding: 8px;
+        }
+
+        .public-url {
+            margin: 0;
+            color: #ffffff;
+        }
+
+        .copy-btn {
+            background-color: #ffffff;
+            color: #080710;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-left: auto;
+            cursor: pointer;
+        }
+
+        .copy-btn i {
+            margin-right: 5px;
+        }
+
+        .btn-group {
+            display: flex;
+        }
+
+        .btn-group .btn {
+            margin-right: 10px;
+        }
+
+        .btn-group .btn i {
+            margin-right: 5px;
+        }
+
+        .no-public-url {
+            margin-bottom: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+        }
+
+        .action-buttons a,
+        .action-buttons button {
+            margin-right: 10px;
+            color: #333; /* Adjust color as needed */
+            text-decoration: none;
+        }
+
+        .button-label {
+            display: none; /* Hide button labels by default */
+        }
+
+        .action-buttons a:hover .button-label,
+        .action-buttons button:hover .button-label {
+            display: inline-block; /* Show button labels on hover */
+            margin-left: 5px;
+        }
+
+        .action-buttons .fas {
+            color: blue;
+        }
+
+        .fas {
+            color: blue;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="background">
+</div>
+<div class="container" style="margin-bottom: 50px;">
+    <h1>All Terms</h1>
+    {% if user_blogs %}
+        <div class="row">
+            {% for blog in user_blogs %}
+                <div class="card">
+                    <div class="card-inner">
+                        <div class="title-box">
+                            <h2 class="card-title">{{ blog.title }}</h2>
+                        </div>
+                        <div class="actions">
+                            {% if blog.public_url %}
+                                <div class="public-url-box">
+                                    <div class="url-container">
+                                        <p class="public-url">Public URL: <a
+                                                    href="{{ request.scheme }}://{{ request.get_host }}/blog/{{ blog.public_url }}/">{{ request.scheme }}://{{ request.get_host }}/blog/{{ blog.public_url }}</a>
+                                        </p>
+                                        <button class="copy-btn"
+                                                data-url="{{ request.scheme }}://{{ request.get_host }}/blog/{{ blog.public_url }}/">
+                                            <i class="fas fa-copy"></i>
+                                            <span class="button-label">Copy</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <p class="no-public-url">No public URL available</p>
+                            {% endif %}
+                            <div class="action-buttons">
+                                <a href="{% url 'blog_detail' public_url=blog.public_url %}">
+                                    <button>
+                                        <i class="fas fa-eye"></i>
+                                        <span class="button-label">View</span>
+                                    </button>
+                                </a>
+                                <a href="{% url 'edit_blog' blog.id %}">
+                                    <button>
+                                        <i class="fas fa-edit"></i>
+                                        <span class="button-label">Edit</span>
+                                    </button>
+                                </a>
+                                <button class="delete-btn" data-title="{{ blog.title }}"
+                                        data-url="{% url 'delete_blog' blog.id %}">
+                                    <i class="fas fa-trash"></i>
+                                    <span class="button-label">Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No files found.</p>
+    {% endif %}
+</div>
+<script>
+    // Get all delete buttons
+    var deleteButtons = document.querySelectorAll('.delete-btn');
+
+    // Add click event listener to each delete button
+    deleteButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            var title = button.getAttribute('data-title');
+            var deleteUrl = button.getAttribute('data-url');
+            confirmDelete(title, deleteUrl);
+        });
+    });
+
+    function confirmDelete(title, deleteUrl) {
+        var confirmation = confirm("Are you sure you want to delete '" + title + "'?");
+        if (confirmation) {
+            // Send a POST request to the delete URL
+            var formData = new FormData();
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', deleteUrl, true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // Reload the page or perform any other action
+                    location.reload();
+                } else {
+                    console.error('Error:', xhr.statusText);
+                    // Handle errors if necessary
+                }
+            };
+            xhr.send(formData);
+        }
+    }
+
+    // Copy button functionality
+    var copyButtons = document.querySelectorAll('.copy-btn');
+
+    copyButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            var url = button.getAttribute('data-url');
+            copyToClipboard(url);
+        });
+    });
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text)
+            .then(function () {
+                alert('URL copied to clipboard!');
+            })
+            .catch(function (error) {
+                console.error('Copy failed: ', error);
+                alert('Failed to copy URL to clipboard!');
+            });
+    }
+</script>
+</body>
+</html>
+
+{% endblock start %}

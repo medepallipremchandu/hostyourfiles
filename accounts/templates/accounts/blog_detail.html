@@ -1,0 +1,49 @@
+<!-- myproject/accounts/templates/accounts/blog_detail.html -->
+
+{% load crispy_forms_tags %}
+{% block start %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  
+<style>
+  /* blog_detail.css */
+
+/* Container for blog details */
+.container {
+ max-width: 800px;
+ margin: 0 auto; /* Center the container horizontally */
+ padding: 20px;
+ text-align: center; /* Center the text inside the container */
+}
+
+/* Heading for blog title */
+h2 {
+ font-size: 24px;
+ color: #333;
+ margin-bottom: 10px;
+}
+
+/* Paragraph for blog content */
+p {
+ font-size: 16px;
+ color: #666;
+ line-height: 1.6;
+ margin-bottom: 20px;
+}
+
+</style>
+</head>
+<body> 
+
+<div class="container">
+    <h2>{{ blog.title }}</h2>
+    <p>{{ blog.content }}</p>
+</div>
+{% endblock start %}
+
+</body>
+</html>
